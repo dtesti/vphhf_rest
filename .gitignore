@@ -2,5 +2,5 @@
 
 *vphhf_rest/sms/media/
 *.pyc
-*vphhf_rest/database/
+*.sqlite3
 *.directory
