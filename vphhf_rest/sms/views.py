@@ -17,43 +17,43 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework import permissions
 
-from vphhf_rest.sms.models import Document
-from vphhf_rest.sms.serializers import DocumentSerializer
+from vphhf_rest.sms.models import File
+from vphhf_rest.sms.serializers import FileSerializer
 
     
     
 # ListCreateAPIView to get easily a get and post method    
-class DocumentList(generics.ListCreateAPIView): 
+class FileList(generics.ListCreateAPIView): 
     """
-    List all documents on server and create new
+    List all files on server and create new
     """
-    queryset = Document.objects.all()
-    serializer_class = DocumentSerializer
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
     #permission_classes = (permissions.IsAuthenticated,)    
 
 
-class DocumentListDetail(APIView):
+class FileListDetail(APIView):
     """
      Get or delete the single resource by GlobalFileID 
     """
     # get the resource
     def get(self, request, pk, format=None):
         try:
-            fileid = Document.objects.get(id=pk)
-        except Document.DoesNotExist:
+            fileid = File.objects.get(id=pk)
+        except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND) 
 
-        serializerfileid = DocumentSerializer(fileid)
+        serializerfileid = FileSerializer(fileid)
         return Response(serializerfileid.data)
         
     # Delete the resource
     def delete(self, request, pk, format=None):
         try:
-            fdfile = Document.objects.get(id=pk).url # No select_related() in this example.  // use a try - block exception
-        except Document.DoesNotExist:
+            fdfile = File.objects.get(id=pk).url # No select_related() in this example.  // use a try - block exception
+        except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        Document.objects.get(id=pk).delete()  # erase it from the database
+        File.objects.get(id=pk).delete()  # erase it from the database
         
         try: 
             os.remove(fdfile.path)
@@ -68,13 +68,13 @@ class DocumentListDetail(APIView):
                       #IsOwnerOrReadOnly,)
                       
 
-class DocumentListContentDetail(APIView):
+class FileListContentDetail(APIView):
 
     # Get request to download the file
     def get(self, request, pk, format=None):
         try:  
-            fdfile = Document.objects.get(id=pk).url # No select_related() in this example.  // use a try - block exception
-        except Document.DoesNotExist:
+            fdfile = File.objects.get(id=pk).url # No select_related() in this example.  // use a try - block exception
+        except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND) 
 
         #download a file
