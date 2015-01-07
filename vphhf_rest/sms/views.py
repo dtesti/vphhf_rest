@@ -43,13 +43,13 @@ class FileListDetail(APIView):
         except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND) 
 
-        serializerfileid = FileSerializer(fileid)
+        serializerfileid = FileSerializer(fileid, context={'request': request})
         return Response(serializerfileid.data)
         
     # Delete the resource
     def delete(self, request, pk, format=None):
         try:
-            fdfile = File.objects.get(id=pk).url # No select_related() in this example.  // use a try - block exception
+            fdfile = File.objects.get(id=pk).filepath # No select_related() in this example.  // use a try - block exception
         except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
@@ -73,7 +73,7 @@ class FileListContentDetail(APIView):
     # Get request to download the file
     def get(self, request, pk, format=None):
         try:  
-            fdfile = File.objects.get(id=pk).url # No select_related() in this example.  // use a try - block exception
+            fdfile = File.objects.get(id=pk).filepath # No select_related() in this example.  // use a try - block exception
         except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND) 
 

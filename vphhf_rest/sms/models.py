@@ -22,22 +22,21 @@ class MediaFileSystemStorage(FileSystemStorage):
 class File(models.Model):
   
     # upload_to = 'your upload dir'; 
-    url = models.FileField( ('file'), upload_to='documents/%Y/%m/%d', storage = MediaFileSystemStorage())
+    filepath = models.FileField( ('file'), upload_to='documents/%Y/%m/%d', storage = MediaFileSystemStorage())
     is_encrypted = models.BooleanField(default=None)
+    
     md5sum = models.CharField(max_length=36)
-    #size = models.IntegerField(default=10)
-
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now_add=True, auto_now=True) # datetime.now default value??
     
     
     def size(self):
-        return self.url.size
+        return self.filepath.size
     
     def save(self, *args, **kwargs):
         if not self.pk:  # file is new
             md5 = hashlib.md5()
-            for chunk in self.url.chunks():
+            for chunk in self.filepath.chunks():
                 md5.update(chunk)
             self.md5sum = md5.hexdigest()
         super(File, self).save(*args, **kwargs)

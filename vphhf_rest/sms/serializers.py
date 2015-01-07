@@ -9,14 +9,16 @@ from vphhf_rest.sms.models import File
 # REST framework includes both Serializer classes, and ModelSerializer classes.
 
  
-class FileSerializer(serializers.ModelSerializer):
+class FileSerializer(serializers.HyperlinkedModelSerializer):
   
-    url = serializers.FileField(label='Select a file')
+    filepath = serializers.FileField(label='Select a file', use_url=False)
     is_encrypted = serializers.BooleanField(required=True, label='Have to be encrypted')
     md5sum = serializers.ReadOnlyField()
     size = serializers.ReadOnlyField()
     
+    # Hyperlink for downloading the file
+    url = serializers.HyperlinkedIdentityField(view_name='file-content')
     
     class Meta:
         model = File  
-        fields = ('id', 'url', 'is_encrypted', 'md5sum', 'size', 'created') # fields for plural
+        fields = ('url', 'id', 'filepath', 'is_encrypted', 'md5sum', 'size', 'created') # fields for plural
